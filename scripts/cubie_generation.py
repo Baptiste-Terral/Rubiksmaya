@@ -54,33 +54,44 @@ def create_material(name, color):
         cmds.connectAttr(f'{material}.outColor', f'{shading_group}.surfaceShader', force=True)
     return name
 
-def apply_material(cubie, face_index, material):
-    face_str = f'{cubie}.f[{face_index}]'
-    cmds.select(face_str)
-    cmds.hyperShade(assign=material)
+def apply_material(cubie, face_indices, material):
+    for face_index in face_indices:
+        face_str = f'{cubie}.f[{face_index}]'
+        cmds.select(face_str)
+        cmds.hyperShade(assign=material)
 
 def color_cubies(cube_names, cube_size, colors):
     # Create materials
     materials = {color_name: create_material(color_name, color) for color_name, color in colors.items()}
     
     offset = (cube_size - 1) / 2.0
+    face_indices = {
+        'left': [3],
+        'right': [1],
+        'bottom': [5],
+        'top': [4],
+        'front': [2],
+        'back': [0]
+    }
+
     for cubie in cube_names:
         pos = cmds.xform(cubie, query=True, translation=True, worldSpace=True)
+        
         # X-axis faces
         if round(pos[0]) == -offset:
-            apply_material(cubie, 3, materials['red'])    # Left face
+            apply_material(cubie, face_indices['left'], materials['red'])    # Left face
         if round(pos[0]) == offset:
-            apply_material(cubie, 1, materials['orange']) # Right face
+            apply_material(cubie, face_indices['right'], materials['orange']) # Right face
         # Y-axis faces
         if round(pos[1]) == -offset:
-            apply_material(cubie, 5, materials['white'])  # Bottom face
+            apply_material(cubie, face_indices['bottom'], materials['white'])  # Bottom face
         if round(pos[1]) == offset:
-            apply_material(cubie, 4, materials['yellow']) # Top face
+            apply_material(cubie, face_indices['top'], materials['yellow']) # Top face
         # Z-axis faces
         if round(pos[2]) == -offset:
-            apply_material(cubie, 2, materials['blue'])   # Front face
+            apply_material(cubie, face_indices['front'], materials['blue'])   # Front face
         if round(pos[2]) == offset:
-            apply_material(cubie, 0, materials['green'])  # Back face
+            apply_material(cubie, face_indices['back'], materials['green'])  # Back face
         
 
 # MAIN
