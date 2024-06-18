@@ -1,14 +1,17 @@
 import sys
+import importlib
 
-sys.path.append(r"E:\Scolarite\EiCnam\1ere_annee\scripting-python-animation\projet")
+# Add the path to your scripts folder
+script_path = r"C:\Users\bapti\Desktop\Documents\Scolarite\EiCnam\1ere_annee\scripts-python-animation\Rubiksmaya\scripts"
+if script_path not in sys.path:
+    sys.path.append(script_path)
 
-for mod in list(sys.modules.keys()):
-    if "scripts" in mod:
-	    del sys.modules[mod]
+# Reload the module if it is already loaded
+module_name = 'ui_generation'
+if module_name in sys.modules:
+    importlib.reload(sys.modules[module_name])
+else:
+    from ui_generation import show_ui
 
-from scripts.cubie_generation import main
-
-# Size of the cube
-cube_size = 3
-
-cube_names = main(cube_size)
+# Call the function to show the UI
+show_ui()
