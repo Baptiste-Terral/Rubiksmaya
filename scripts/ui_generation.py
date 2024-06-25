@@ -17,7 +17,8 @@ class RubiksCubeUI(QWidget):
         self.size_label = QLabel('Rubik\'s Cube Size:')
         self.size_spinbox = QSpinBox()
         self.size_spinbox.setMinimum(1)
-        self.size_spinbox.setValue(2)
+        self.size_spinbox.setValue(3)
+        self.size_spinbox.setMaximum(3) # Limiting to 3 for now
         
         size_layout.addWidget(self.size_label)
         size_layout.addWidget(self.size_spinbox)

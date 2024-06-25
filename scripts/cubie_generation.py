@@ -42,6 +42,7 @@ colors = {
     'green': [0.0, 1.0, 0.0],
     'red': [1.0, 0.0, 0.0],
     'orange': [1.0, 0.647, 0.0],
+    'black': [0.0, 0.0, 0.0],
     'purple': [0.502, 0.0, 0.502] # for debugging purposes
 }
 
@@ -53,12 +54,35 @@ def create_material(name, color):
         cmds.connectAttr(f'{material}.outColor', f'{shading_group}.surfaceShader', force=True)
     return name
 
+def apply_black_border(cubie):
+    for i in range(6):
+        face_str = f'{cubie}.f[{i}]'
+        cmds.select(face_str)
+        
+        # First extrude out slightly to create the border
+        extrude_node = cmds.polyExtrudeFacet(localTranslateZ=0.01, keepFacesTogether=True)[0]
+        
+        # Select the new faces created by the extrusion
+        cmds.select(f'{cubie}.f[{i}]', add=True)
+        cmds.select(f'{cubie}.e[*]', deselect=True)
+        
+        # Assign the black material to the border faces
+        cmds.hyperShade(assign=[0.0, 0.0, 0.0])
+        
+        # Deselect the border faces and reselect the original face
+        cmds.select(f'{cubie}.f[{i}]', toggle=True)
+        
+        # Extrude the original face back to its original position
+        cmds.polyExtrudeFacet(extrude_node, edit=True, localTranslateZ=-0.01)
+
 # apply material on a single face of a cubie
 def apply_material(cubie, face_index, material):
     face_str = f'{cubie}.f[{face_index}]'
     cmds.select(face_str)
     cmds.hyperShade(assign=material)
     print(f'Applied material {material} to {face_str}')
+    # Apply black border around the face
+    apply_black_border(cubie)
 
 def main(cube_size):
     custom_matrices = generate_custom_matrices(cube_size)
@@ -141,10 +165,113 @@ def main(cube_size):
                 apply_material(cubie, 0, materials['green'])
                 apply_material(cubie, 1, materials['purple'])
                 apply_material(cubie, 4, materials['yellow'])
-
-
-        #return cube_names
     
-    # 3x3x3 and more cubes
+    # 3x3x3 cube
+    if cube_size == 3:
+        for i, matrix in enumerate(custom_matrices):
+            cubie_name = create_cubie(1, matrix, i)
+            cube_names.append(cubie_name)
+        
+        # color centers of each face of the cube
+        # white center
+        apply_material(cube_names[4], 5, materials['white'])
+        # yellow center
+        apply_material(cube_names[22], 4, materials['yellow'])
+        # blue center
+        apply_material(cube_names[12], 2, materials['blue'])
+        # green center
+        apply_material(cube_names[14], 0, materials['green'])
+        # red center
+        apply_material(cube_names[10], 3, materials['red'])
+        # orange center
+        apply_material(cube_names[16], 1, materials['purple'])
+
+        # Corners
+        for cubie in cube_names:
+            pos = cmds.xform(cubie, query=True, translation=True, worldSpace=True)
+            print(f'Position of {cubie}: {pos}')
+
+            # Determine which faces need which colors based on the position
+            if round(pos[0], 1) == -1.0 and round(pos[1], 1) == -1.0 and round(pos[2], 1) == -1.0:
+                # Bottom-left-back
+                apply_material(cubie, 2, materials['blue'])
+                apply_material(cubie, 3, materials['red'])
+                apply_material(cubie, 5, materials['white'])
+            elif round(pos[0], 1) == -1.0 and round(pos[1], 1) == -1.0 and round(pos[2], 1) == 1.0:
+                # Bottom-left-front
+                apply_material(cubie, 0, materials['green'])
+                apply_material(cubie, 3, materials['red'])
+                apply_material(cubie, 5, materials['white'])
+            elif round(pos[0], 1) == -1.0 and round(pos[1], 1) == 1.0 and round(pos[2], 1) == -1.0:
+                # Top-left-back
+                apply_material(cubie, 2, materials['blue'])
+                apply_material(cubie, 1, materials['purple'])
+                apply_material(cubie, 5, materials['white'])
+            elif round(pos[0], 1) == -1.0 and round(pos[1], 1) == 1.0 and round(pos[2], 1) == 1.0:
+                # Top-left-front
+                apply_material(cubie, 0, materials['green'])
+                apply_material(cubie, 1, materials['purple'])
+                apply_material(cubie, 5, materials['white'])
+            elif round(pos[0], 1) == 1.0 and round(pos[1], 1) == -1.0 and round(pos[2], 1) == -1.0:
+                # Bottom-right-back
+                apply_material(cubie, 2, materials['blue'])
+                apply_material(cubie, 3, materials['red'])
+                apply_material(cubie, 4, materials['yellow'])
+            elif round(pos[0], 1) == 1.0 and round(pos[1], 1) == -1.0 and round(pos[2], 1) == 1.0:
+                # Bottom-right-front
+                apply_material(cubie, 0, materials['green'])
+                apply_material(cubie, 3, materials['red'])
+                apply_material(cubie, 4, materials['yellow'])
+            elif round(pos[0], 1) == 1.0 and round(pos[1], 1) == 1.0 and round(pos[2], 1) == -1.0:
+                # Top-right-back
+                apply_material(cubie, 2, materials['blue'])
+                apply_material(cubie, 1, materials['purple'])
+                apply_material(cubie, 4, materials['yellow'])
+            elif round(pos[0], 1) == 1.0 and round(pos[1], 1) == 1.0 and round(pos[2], 1) == 1.0:
+                # Top-right-front
+                apply_material(cubie, 0, materials['green'])
+                apply_material(cubie, 1, materials['purple'])
+                apply_material(cubie, 4, materials['yellow'])
+
+        # Edges
+        # White blue edge
+        apply_material(cube_names[3], 2, materials['blue'])
+        apply_material(cube_names[3], 5, materials['white'])
+        # White green edge
+        apply_material(cube_names[5], 0, materials['green'])
+        apply_material(cube_names[5], 5, materials['white'])
+        # White red edge
+        apply_material(cube_names[1], 3, materials['red'])
+        apply_material(cube_names[1], 5, materials['white'])
+        # White orange edge
+        apply_material(cube_names[7], 1, materials['purple'])
+        apply_material(cube_names[7], 5, materials['white'])
+        # Yellow blue edge
+        apply_material(cube_names[21], 2, materials['blue'])
+        apply_material(cube_names[21], 4, materials['yellow'])
+        # Yellow green edge
+        apply_material(cube_names[23], 0, materials['green'])
+        apply_material(cube_names[23], 4, materials['yellow'])
+        # Yellow red edge
+        apply_material(cube_names[19], 3, materials['red'])
+        apply_material(cube_names[19], 4, materials['yellow'])
+        # Yellow orange edge
+        apply_material(cube_names[25], 1, materials['purple'])
+        apply_material(cube_names[25], 4, materials['yellow'])
+        # Blue red edge
+        apply_material(cube_names[9], 2, materials['blue'])
+        apply_material(cube_names[9], 3, materials['red'])
+        # Blue orange edge
+        apply_material(cube_names[15], 2, materials['blue'])
+        apply_material(cube_names[15], 1, materials['purple'])
+        # Green red edge
+        apply_material(cube_names[11], 0, materials['green'])
+        apply_material(cube_names[11], 3, materials['red'])
+        # Green orange edge
+        apply_material(cube_names[17], 0, materials['green'])
+        apply_material(cube_names[17], 1, materials['purple'])
+
+    # n x n x n cube
+    # later
 
     return cube_names
