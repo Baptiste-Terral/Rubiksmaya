@@ -54,26 +54,42 @@ def create_material(name, color):
         cmds.connectAttr(f'{material}.outColor', f'{shading_group}.surfaceShader', force=True)
     return name
 
-def apply_black_border(cubie):
-    for i in range(6):
+def apply_black_border(cubie, face_index):
+    face_str = f'{cubie}.f[{face_index}]'
+    cmds.select(face_str)
+    
+    # First extrude out slightly to create the border
+    extrude_node = cmds.polyExtrudeFacet(localTranslateZ=0.01, keepFacesTogether=True)[0]
+    
+    # Select the new faces created by the extrusion
+    cmds.select(f'{cubie}.f[{face_index}]', add=True)
+    cmds.select(f'{cubie}.e[*]', deselect=True)
+    
+    # Assign the black material to the border faces
+    cmds.hyperShade(assign=[0.0, 0.0, 0.0])
+    
+    # Deselect the border faces and reselect the original face
+    cmds.select(f'{cubie}.f[{face_index}]', toggle=True)
+    
+    # Extrude the original face back to its original position
+    cmds.polyExtrudeFacet(extrude_node, edit=True, localTranslateZ=-0.01)
+
+def apply_black_to_uncolored_faces(cubie):
+    # Get the number of faces of the cubie
+    face_count = cmds.polyEvaluate(cubie, face=True)
+    black_color = [0.0, 0.0, 0.0]
+    
+    for i in range(face_count):
         face_str = f'{cubie}.f[{i}]'
-        cmds.select(face_str)
         
-        # First extrude out slightly to create the border
-        extrude_node = cmds.polyExtrudeFacet(localTranslateZ=0.01, keepFacesTogether=True)[0]
+        # Check if the face already has a material applied
+        shaders = cmds.listConnections(face_str, type='shadingEngine')
         
-        # Select the new faces created by the extrusion
-        cmds.select(f'{cubie}.f[{i}]', add=True)
-        cmds.select(f'{cubie}.e[*]', deselect=True)
-        
-        # Assign the black material to the border faces
-        cmds.hyperShade(assign=[0.0, 0.0, 0.0])
-        
-        # Deselect the border faces and reselect the original face
-        cmds.select(f'{cubie}.f[{i}]', toggle=True)
-        
-        # Extrude the original face back to its original position
-        cmds.polyExtrudeFacet(extrude_node, edit=True, localTranslateZ=-0.01)
+        if not shaders:
+            # Assign the material to the face
+            cmds.select(face_str)  # Select the face
+            cmds.hyperShade(assign=[0.0, 0.0, 0.0])  # Assign the material to the selected face
+
 
 # apply material on a single face of a cubie
 def apply_material(cubie, face_index, material):
@@ -82,7 +98,7 @@ def apply_material(cubie, face_index, material):
     cmds.hyperShade(assign=material)
     print(f'Applied material {material} to {face_str}')
     # Apply black border around the face
-    apply_black_border(cubie)
+    apply_black_border(cubie, face_index)
 
 def main(cube_size):
     custom_matrices = generate_custom_matrices(cube_size)
