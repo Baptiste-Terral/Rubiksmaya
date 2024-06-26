@@ -1,6 +1,6 @@
 import sys
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QSpinBox
-import cubie_generation
+import cubie_generation, rotations
 from maya import cmds
 
 class RubiksCubeUI(QWidget):
@@ -49,12 +49,20 @@ class RubiksCubeUI(QWidget):
         self.rotation_buttons.addWidget(self.rotate_y_button)
         self.rotation_buttons.addWidget(self.rotate_z_button)
 
-        self.rotate_x_button.hide()
-        self.rotate_y_button.hide()
-        self.rotate_z_button.hide()
+        self.toggle_rotation_buttons(False)
 
         main_layout.addLayout(self.rotation_buttons)
         self.setLayout(main_layout)
+
+    def toggle_rotation_buttons(self, state):
+        if state:
+            self.rotate_x_button.show()
+            self.rotate_y_button.show()
+            self.rotate_z_button.show()
+        else:
+            self.rotate_x_button.hide()
+            self.rotate_y_button.hide()
+            self.rotate_z_button.hide()
 
     def generate_cube(self):
         cube_size = self.size_spinbox.value()
@@ -64,9 +72,7 @@ class RubiksCubeUI(QWidget):
         self.size_spinbox.hide()
         self.size_label.hide()
         self.delete_button.show()
-        self.rotate_x_button.show()
-        self.rotate_y_button.show()
-        self.rotate_z_button.show()
+        self.toggle_rotation_buttons(True)
 
     def delete_cube(self):
         print('Deleting Rubik\'s cube')
@@ -75,14 +81,17 @@ class RubiksCubeUI(QWidget):
         cmds.delete()
         self.generate_button.show()
         self.delete_button.hide()
-        self.rotate_x_button.hide()
-        self.rotate_y_button.hide()
-        self.rotate_z_button.hide()
+        self.toggle_rotation_buttons(False)
         self.size_spinbox.show()
         self.size_label.show()
 
     def rotate_face(self, axis):
-        print(f'Rotating {axis} face')
+        if axis == 'X':
+            rotations.rotate_x_axis()
+        elif axis == 'Y':
+            rotations.rotate_y_axis()
+        elif axis == 'Z':
+            rotations.rotate_z_axis()
 
     def main(self, cube_size):
         print(f'Main function called with cube size: {cube_size}')
