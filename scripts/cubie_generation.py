@@ -54,7 +54,7 @@ def create_material(name, color):
         cmds.connectAttr(f'{material}.outColor', f'{shading_group}.surfaceShader', force=True)
     return name
 
-def apply_black_border(cubie, face_index, border_deepness=0.08):
+def apply_black_border(cubie, face_index, border_deepness=0.02):
     face_str = f'{cubie}.f[{face_index}]'
     cmds.select(face_str)
     
