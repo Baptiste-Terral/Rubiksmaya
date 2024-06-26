@@ -54,12 +54,12 @@ def create_material(name, color):
         cmds.connectAttr(f'{material}.outColor', f'{shading_group}.surfaceShader', force=True)
     return name
 
-def apply_black_border(cubie, face_index):
+def apply_black_border(cubie, face_index, border_deepness=0.08):
     face_str = f'{cubie}.f[{face_index}]'
     cmds.select(face_str)
     
     # First extrude out slightly to create the border
-    extrude_node = cmds.polyExtrudeFacet(localTranslateZ=0.01, keepFacesTogether=True)[0]
+    extrude_node = cmds.polyExtrudeFacet(localTranslateZ=border_deepness, keepFacesTogether=True)[0]
     
     # Select the new faces created by the extrusion
     cmds.select(f'{cubie}.f[{face_index}]', add=True)
@@ -72,7 +72,7 @@ def apply_black_border(cubie, face_index):
     cmds.select(f'{cubie}.f[{face_index}]', toggle=True)
     
     # Extrude the original face back to its original position
-    cmds.polyExtrudeFacet(extrude_node, edit=True, localTranslateZ=-0.01)
+    cmds.polyExtrudeFacet(extrude_node, edit=True, localTranslateZ=-border_deepness)
 
 def apply_black_to_uncolored_faces(cubie):
     # Get the number of faces of the cubie
@@ -89,7 +89,6 @@ def apply_black_to_uncolored_faces(cubie):
             # Assign the material to the face
             cmds.select(face_str)  # Select the face
             cmds.hyperShade(assign=[0.0, 0.0, 0.0])  # Assign the material to the selected face
-
 
 # apply material on a single face of a cubie
 def apply_material(cubie, face_index, material):
