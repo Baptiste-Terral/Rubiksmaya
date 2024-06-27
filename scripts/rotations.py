@@ -16,7 +16,7 @@ def get_cube_size():
 
 def get_face_cubies(face):
     size = get_cube_size()
-    threshold = -size * 0.5  # Adjust this threshold based on your cubie positions
+    threshold = (size - 1) / 2.0  # Threshold is based on the size of the cube
 
     face_cubies = []
 
@@ -25,9 +25,9 @@ def get_face_cubies(face):
         pos = cmds.xform(cubie, q=True, ws=True, t=True)
         print(f'{cubie} position: {pos}')
 
-        if face == 'U' and pos[1] < threshold:
+        if face == 'U' and pos[1] > threshold:
             face_cubies.append(cubie)
-        elif face == 'D' and pos[1] > -threshold:
+        elif face == 'D' and pos[1] < -threshold:
             face_cubies.append(cubie)
         elif face == 'L' and pos[0] < -threshold:
             face_cubies.append(cubie)
@@ -40,6 +40,7 @@ def get_face_cubies(face):
 
     print(f'Face {face} cubies: {face_cubies}')
     return face_cubies
+
 
 def rotate_face(face, degrees, axis):
     cubies = get_face_cubies(face)

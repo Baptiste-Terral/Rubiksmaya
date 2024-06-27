@@ -1,7 +1,7 @@
 import sys
 import importlib
 
-# Add the path to your scripts folder
+# Add the path to the scripts folder
 script_path = r"C:\Users\bapti\Desktop\Documents\Scolarite\EiCnam\1ere_annee\scripts-python-animation\Rubiksmaya\scripts"
 sys.path.append(script_path)
 
