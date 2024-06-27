@@ -180,6 +180,8 @@ def main(cube_size):
                 apply_material(cubie, 0, materials['green'])
                 apply_material(cubie, 1, materials['purple'])
                 apply_material(cubie, 4, materials['yellow'])
+
+            apply_black_to_uncolored_faces(cubie_name)
     
     # 3x3x3 cube
     if cube_size == 3:
@@ -248,43 +250,58 @@ def main(cube_size):
                 apply_material(cubie, 1, materials['purple'])
                 apply_material(cubie, 4, materials['yellow'])
 
+            #apply_black_to_uncolored_faces(cubie_name)
+
         # Edges
         # White blue edge
         apply_material(cube_names[3], 2, materials['blue'])
         apply_material(cube_names[3], 5, materials['white'])
+        #apply_black_to_uncolored_faces(cube_names[3])
         # White green edge
         apply_material(cube_names[5], 0, materials['green'])
         apply_material(cube_names[5], 5, materials['white'])
+        #apply_black_to_uncolored_faces(cube_names[5])
         # White red edge
         apply_material(cube_names[1], 3, materials['red'])
         apply_material(cube_names[1], 5, materials['white'])
+        #apply_black_to_uncolored_faces(cube_names[1])
         # White orange edge
         apply_material(cube_names[7], 1, materials['purple'])
         apply_material(cube_names[7], 5, materials['white'])
+        #apply_black_to_uncolored_faces(cube_names[7])
         # Yellow blue edge
         apply_material(cube_names[21], 2, materials['blue'])
         apply_material(cube_names[21], 4, materials['yellow'])
+        #apply_black_to_uncolored_faces(cube_names[21])
         # Yellow green edge
         apply_material(cube_names[23], 0, materials['green'])
         apply_material(cube_names[23], 4, materials['yellow'])
+        #apply_black_to_uncolored_faces(cube_names[23])
         # Yellow red edge
         apply_material(cube_names[19], 3, materials['red'])
         apply_material(cube_names[19], 4, materials['yellow'])
+        #apply_black_to_uncolored_faces(cube_names[19])
         # Yellow orange edge
         apply_material(cube_names[25], 1, materials['purple'])
         apply_material(cube_names[25], 4, materials['yellow'])
+        #apply_black_to_uncolored_faces(cube_names[25])
         # Blue red edge
         apply_material(cube_names[9], 2, materials['blue'])
         apply_material(cube_names[9], 3, materials['red'])
+        #apply_black_to_uncolored_faces(cube_names[9])
         # Blue orange edge
         apply_material(cube_names[15], 2, materials['blue'])
         apply_material(cube_names[15], 1, materials['purple'])
+        #apply_black_to_uncolored_faces(cube_names[15])
         # Green red edge
         apply_material(cube_names[11], 0, materials['green'])
         apply_material(cube_names[11], 3, materials['red'])
+        #apply_black_to_uncolored_faces(cube_names[11])
         # Green orange edge
         apply_material(cube_names[17], 0, materials['green'])
         apply_material(cube_names[17], 1, materials['purple'])
+        #apply_black_to_uncolored_faces(cube_names[17])
+        
 
     # n x n x n cube
     # later

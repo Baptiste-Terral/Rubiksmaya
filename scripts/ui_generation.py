@@ -40,14 +40,32 @@ class RubiksCubeUI(QWidget):
         self.rotate_x_button = QPushButton('Rotate X')
         self.rotate_y_button = QPushButton('Rotate Y')
         self.rotate_z_button = QPushButton('Rotate Z')
+        self.rotate_r_button = QPushButton('Rotate R')
+        self.rotate_l_button = QPushButton('Rotate L')
+        self.rotate_u_button = QPushButton('Rotate U')
+        self.rotate_d_button = QPushButton('Rotate D')
+        self.rotate_f_button = QPushButton('Rotate F')
+        self.rotate_b_button = QPushButton('Rotate B')
 
         self.rotate_x_button.clicked.connect(lambda: self.rotate_face('X'))
         self.rotate_y_button.clicked.connect(lambda: self.rotate_face('Y'))
         self.rotate_z_button.clicked.connect(lambda: self.rotate_face('Z'))
+        self.rotate_r_button.clicked.connect(lambda: self.rotate_face('R'))
+        self.rotate_l_button.clicked.connect(lambda: self.rotate_face('L'))
+        self.rotate_u_button.clicked.connect(lambda: self.rotate_face('U'))
+        self.rotate_d_button.clicked.connect(lambda: self.rotate_face('D'))
+        self.rotate_f_button.clicked.connect(lambda: self.rotate_face('F'))
+        self.rotate_b_button.clicked.connect(lambda: self.rotate_face('B'))
 
         self.rotation_buttons.addWidget(self.rotate_x_button)
         self.rotation_buttons.addWidget(self.rotate_y_button)
         self.rotation_buttons.addWidget(self.rotate_z_button)
+        self.rotation_buttons.addWidget(self.rotate_r_button)
+        self.rotation_buttons.addWidget(self.rotate_l_button)
+        self.rotation_buttons.addWidget(self.rotate_u_button)
+        self.rotation_buttons.addWidget(self.rotate_d_button)
+        self.rotation_buttons.addWidget(self.rotate_f_button)
+        self.rotation_buttons.addWidget(self.rotate_b_button)
 
         self.toggle_rotation_buttons(False)
 
@@ -59,10 +77,22 @@ class RubiksCubeUI(QWidget):
             self.rotate_x_button.show()
             self.rotate_y_button.show()
             self.rotate_z_button.show()
+            self.rotate_r_button.show()
+            self.rotate_l_button.show()
+            self.rotate_u_button.show()
+            self.rotate_d_button.show()
+            self.rotate_f_button.show()
+            self.rotate_b_button.show()
         else:
             self.rotate_x_button.hide()
             self.rotate_y_button.hide()
             self.rotate_z_button.hide()
+            self.rotate_r_button.hide()
+            self.rotate_l_button.hide()
+            self.rotate_u_button.hide()
+            self.rotate_d_button.hide()
+            self.rotate_f_button.hide()
+            self.rotate_b_button.hide()
 
     def generate_cube(self):
         cube_size = self.size_spinbox.value()
@@ -85,13 +115,25 @@ class RubiksCubeUI(QWidget):
         self.size_spinbox.show()
         self.size_label.show()
 
-    def rotate_face(self, axis):
+    def rotate_face(self, axis): 
         if axis == 'X':
             rotations.rotate_x_axis()
         elif axis == 'Y':
             rotations.rotate_y_axis()
         elif axis == 'Z':
             rotations.rotate_z_axis()
+        elif axis == 'R':
+            rotations.rotate_right_face()
+        elif axis == 'L':
+            rotations.rotate_left_face()
+        elif axis == 'U':
+            rotations.rotate_up_face()
+        elif axis == 'D':
+            rotations.rotate_down_face()
+        elif axis == 'F':
+            rotations.rotate_front_face()
+        elif axis == 'B':
+            rotations.rotate_back_face()
 
     def main(self, cube_size):
         print(f'Main function called with cube size: {cube_size}')
